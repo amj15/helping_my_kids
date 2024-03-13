@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en" class="h-100" data-bs-theme="auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Alejandro Martínez">
+    <title>Aprende las tablas de multiplicar</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
+    <link href="assets/css/cover.css" rel="stylesheet">
+</head>
+<body class="d-flex h-100 text-center text-bg-dark">
+
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto">
+        <div>
+            <h1 class="float-md-start mb-0 honk-text"><a href="index.html" class="btn btn-primary fs-2"><i class="fa fa-home fs-5"></i> Inicio</a> Multiplicaciones</h1>
+            
+        </div>
+    </header>
+
+    <main class="px-3">
+        <div class="row">
+            <div class="col-12" style="margin-bottom: 20px;">
+                <span class="honk-text fs-custom" id="a">5</span>
+                <span class="honk-text fs-custom">x</span>
+                <span class="honk-text fs-custom" id="b">5</span>
+                <span class="honk-text fs-custom">=</span>
+                <input class="honk-text fs-custom" style="width: 200px; text-align: center; border-radius: 11px;border: 1px solid #fff;background: #ffffff40;" id="c" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" style="margin: 20px auto;width: 400px;">
+                <div class="row">
+                    <div class="col"><button class="keyboard" data-value="1">1</button></div>
+                    <div class="col"><button class="keyboard" data-value="2">2</button></div>
+                    <div class="col"><button class="keyboard" data-value="3">3</button></div>
+                </div>
+                <div class="row">
+                    <div class="col"><button class="keyboard" data-value="4">4</button></div>
+                    <div class="col"><button class="keyboard" data-value="5">5</button></div>
+                    <div class="col"><button class="keyboard" data-value="6">6</button></div>
+                </div>
+                <div class="row">
+                    <div class="col"><button class="keyboard" data-value="7">7</button></div>
+                    <div class="col"><button class="keyboard" data-value="8">8</button></div>
+                    <div class="col"><button class="keyboard" data-value="9">9</button></div>
+                </div>
+                <div class="row">
+                    <div class="col"><button class="keyboard bg-success" data-value="ok">OK</button></div>
+                    <div class="col"><button class="keyboard" data-value="0">0</button></div>
+                    <div class="col"><button id="calculate" class="keyboard bg-danger" data-value="ko">borrar</button></div>
+                </div>
+        </div>
+
+        </div>
+        </p>
+
+        <button class="btn btn-primary honk-text" style="font-size: 30px" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            ¿Cómo lo llevo?
+        </button>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasExampleLabel">¿Cómo lo llevo?<span id="note" style="padding-left: 10px" class="badge badge-lg bg-secondary"></span></h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div id="global-results">
+                    Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="result_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="background: #ffffff00;">
+                    <div class="modal-body" id="result-box">
+                        <img id="img" src="https://dl3.pushbulletusercontent.com/VKIB8E9dMgYiLuyNQBcgkO0sLGl3MSom/IMG20240222150658.jpg" alt="">
+                        <h2 id="result-text" class="honk-text" style="font-size: 50px"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-auto text-white-50">
+        <p>
+            
+        </p>
+    </footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+<script src="assets/js/menu.js"></script>
+<script>
+
+    loadMenu('multiplicaciones');
+
+    const myModal = new bootstrap.Modal('#result_modal', {
+        keyboard: false
+    })
+
+    let globals = [];
+
+    for(i = 0; i <= 12; i++){
+        let temp = [];
+        for(j = 0; j <= 12; j++){
+            temp.push({'result' : 0});
+        }
+        globals.push(temp);
+    }
+
+    $('#a').text(randomIntFromInterval(0,12));
+    $('#b').text(randomIntFromInterval(0,12));
+
+    $('.keyboard').on('click', function(){
+        let value = $(this).data('value');
+        if(value == 'ok'){
+            calculate();
+        }else if(value == 'ko'){
+            $('#c').val('');
+        }else{
+            $('#c').val($('#c').val() + value);
+        }
+    });
+
+    function calculate(){
+        let a = $('#a').text();
+        let b = $('#b').text();
+        let c = $('#c').val();
+
+        $('#a').text(randomIntFromInterval(0,12));
+        $('#b').text(randomIntFromInterval(0,12));
+
+        $randIMg = randomIntFromInterval(1,7);
+        if (a * b == c) {
+            $('#img').attr('src', `assets/images/ok_${randomIntFromInterval(1,7)}.gif`);
+
+            globals[a][b].result = 1;
+            globals[b][a].result = 1;
+
+            $('#result-text').text('Máquina');
+        } else {
+            $('#img').attr('src', `assets/images/ko_${randomIntFromInterval(1,7)}.gif`);
+
+            globals[a][b].result = 2;
+            globals[b][a].result = 2;
+
+            $('#result-text').text(`Noooo melón, ${a} x ${b} no es ${c} es ${a * b}`);
+        }
+        $('#c').val('');
+        printGlobals();
+        myModal.show();
+    };
+
+    function printGlobals(){
+        let html = '';
+        let ok = 0;
+        let ko = 0;
+        for(i = 0; i <= 12; i++){
+            html += '<div class="row table-container">';
+            let iknow = 'No te he preguntado';
+            let badgeClass = 'bg-warning';
+            for(j = 0; j <= 12; j++){
+                iknow = 'No te he preguntado';
+                badgeClass = 'bg-warning';
+                if(globals[i][j].result == 1){
+                    iknow = 'Sip';
+                    badgeClass = 'bg-success';
+                    ok++;
+                }
+
+                if(globals[i][j].result == 2){
+                    iknow = 'Nope';
+                    badgeClass = 'bg-danger';
+                    ko++;
+                }
+
+                html += `<div class="col-12">${i} x ${j} = ${i*j}<span class="badge ${badgeClass}" style="margin-left: 10px">${iknow}</span></div>`;
+            }
+            html += '</div>';
+        }
+        $('#global-results').html(html);
+        $('#note').text(parseFloat((ok/(ok+ko))*10).toFixed(2));
+
+    }
+
+    printGlobals();
+
+    function randomIntFromInterval(min, max) { // min and max included
+        return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+</script>
+
+</body>
+</html>
